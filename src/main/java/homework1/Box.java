@@ -29,11 +29,9 @@ public class Box <T extends Fruit> {
 
     public double getWeight(){
 
-        if(fruitsList.isEmpty()){
-            return 0;
-        }
-
-        return fruitsList.get(0).getWeightPerPiece();
+        return fruitsList.stream()
+                .mapToDouble(Fruit::getWeightPerPiece)
+                .sum();
 
     }
 

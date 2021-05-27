@@ -6,6 +6,7 @@ public class App {
 
     private static final int MAX_FRUITS_QUANTITY = 20;
     private static final int MAX_BOXES_QUANTITY = 5;
+
     public static void main(String[] args) {
 
         Random random = new Random();
