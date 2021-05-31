@@ -185,8 +185,6 @@ public class ClientHandler {
             }
 
         }
-
-
     }
 
     private void checkAuthentificationTimeout(){

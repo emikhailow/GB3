@@ -47,30 +47,7 @@ public class UsersDatabase {
 
     }
 
-    public void insertUser(String login, String password, String nickname){
-
-        try(PreparedStatement preparedStatement = connection.prepareStatement("select login from users where login = ?")){
-            preparedStatement.setString(1, login);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
-                return;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try(PreparedStatement preparedStatement = connection.prepareStatement("insert into users (login, password, nickname) values (?, ?, ?)")){
-            preparedStatement.setString(1, login);
-            preparedStatement.setString(2, password);
-            preparedStatement.setString(3, nickname);
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public String getNickname(String login, String password) {
+   public String getNickname(String login, String password) {
 
         try(PreparedStatement preparedStatement = connection.prepareStatement("select nickname from users where login = ? and password = ?")){
             preparedStatement.setString(1, login);
@@ -88,53 +65,49 @@ public class UsersDatabase {
 
     public boolean updateNickname(String login, String newNickname) {
 
-        try(PreparedStatement preparedStatement = connection.prepareStatement("select nickname from users where nickname = ?")){
-            preparedStatement.setString(1, newNickname);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(
+                PreparedStatement preparedStatementSelect = connection.prepareStatement("select nickname from users where nickname = ?");
+                PreparedStatement preparedStatementUpdate = connection.prepareStatement("update users set nickname = ? where login = ?")
+        ){
+            preparedStatementSelect.setString(1, newNickname);
+            ResultSet resultSet = preparedStatementSelect.executeQuery();
             if(resultSet.next()){
                 return false;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try(PreparedStatement preparedStatement = connection.prepareStatement("update users set nickname = ? where login = ?")){
-            preparedStatement.setString(1, newNickname);
-            preparedStatement.setString(2, login);
-            preparedStatement.execute();
+            preparedStatementUpdate.setString(1, newNickname);
+            preparedStatementUpdate.setString(2, login);
+            preparedStatementUpdate.execute();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return false;
-
     }
 
     public boolean createUser(String login, String password, String nickname) {
 
-        try(PreparedStatement preparedStatement = connection.prepareStatement("select login, nickname from users where login = ? or nickname = ?")){
-            preparedStatement.setString(1, login);
-            preparedStatement.setString(2, nickname);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try(
+                PreparedStatement preparedStatementSelect = connection.prepareStatement("select login, nickname from users where login = ? or nickname = ?");
+                PreparedStatement preparedStatementInsert = connection.prepareStatement("insert into users (login, password, nickname) values (?, ?, ?)")
+        ){
+            preparedStatementSelect.setString(1, login);
+            preparedStatementSelect.setString(2, nickname);
+            ResultSet resultSet = preparedStatementSelect.executeQuery();
             if(resultSet.next()){
                 return false;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
-        try(PreparedStatement preparedStatement = connection.prepareStatement("insert into users (login, password, nickname) values (?, ?, ?)")){
-            preparedStatement.setString(1, login);
-            preparedStatement.setString(2, password);
-            preparedStatement.setString(3, nickname);
-            preparedStatement.execute();
+            preparedStatementInsert.setString(1, login);
+            preparedStatementInsert.setString(2, password);
+            preparedStatementInsert.setString(3, nickname);
+            preparedStatementInsert.execute();
             return true;
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return false;
-
     }
 }

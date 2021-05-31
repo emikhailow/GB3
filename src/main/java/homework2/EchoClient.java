@@ -42,12 +42,11 @@ public class EchoClient extends JFrame {
                     String messageFromServer = inputStream.readUTF();
                     if(messageFromServer.startsWith(ChatConstants.AUTH_OK)){
                         chatArea.append(String.format("[Server]: You have been authorized successfully\n"));
-                    } else if(messageFromServer.equals(ChatConstants.CLOSE_CONNECTION)){
+                    } else if(messageFromServer.equals(ChatConstants.CLOSE_CONNECTION) ||
+                            messageFromServer.equals(ChatConstants.STOP_WORD)){
                         shutdownClient();
                     } else if(messageFromServer.startsWith(ChatConstants.TITLE)){
                         setTitle(messageFromServer.split("\\s+")[1]);
-                    } else if(messageFromServer.equals(ChatConstants.STOP_WORD)){
-                        break;
                     } else if(messageFromServer.startsWith(ChatConstants.CLIENTS_LIST)){
                         chatArea.append(String.format("[Server]: Now online: %s\n",
                                 Arrays.stream(messageFromServer.split("\\s+"))
@@ -141,6 +140,7 @@ public class EchoClient extends JFrame {
         });
 
         setVisible(true);
+        inputField.grabFocus();
 
     }
 
