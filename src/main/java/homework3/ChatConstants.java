@@ -16,6 +16,6 @@ public class ChatConstants {
     public static final String CREDENTIALS = "/credentials";
     public static final String CHANGE_NICKNAME = "/cn";
     public static final String SIGN_UP = "/signup";
-    public static final int HISTORY_LINES_QUANTITY = 5;
+    public static final int HISTORY_LINES_QUANTITY = 100;
 
 }
