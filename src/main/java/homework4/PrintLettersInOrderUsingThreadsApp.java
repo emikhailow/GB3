@@ -3,7 +3,7 @@ package homework4;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class App {
+public class PrintLettersInOrderUsingThreadsApp {
 
     private static final int NUMBER_OF_REPEЕTITIONS = 3;
 
@@ -12,7 +12,7 @@ public class App {
     private static volatile char currentLetter;
 
     public static void main(String[] args) {
-        App app = new App();
+        PrintLettersInOrderUsingThreadsApp app = new PrintLettersInOrderUsingThreadsApp();
         ExecutorService executorService = Executors.newFixedThreadPool(stringToRepeat.length());
         currentLetter = stringToRepeat.charAt(0);
         for(int i = 0; i < stringToRepeat.length(); i++){
