@@ -201,29 +201,31 @@ public class EchoClient extends JFrame {
         printStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(file,true)));
     }
 
-    private void restoreHistory(File file) throws FileNotFoundException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(new ReverseLineInputStream(file)));
-        List<String> historyList = new ArrayList<>();
-        int count = ChatConstants.HISTORY_LINES_QUANTITY;
-        while(true && count > 0){
-            String line = null;
-            try {
-                line = in.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
+
+    private void restoreHistory(File file) {
+        try(BufferedReader in = new BufferedReader(new InputStreamReader(new ReverseLineInputStream(file)))) {
+            List<String> historyList = new ArrayList<>();
+            int count = ChatConstants.HISTORY_LINES_QUANTITY;
+            while (true && count > 0) {
+                String line = null;
+                try {
+                    line = in.readLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (line == null) {
+                    break;
+                }
+                historyList.add(line);
+                count--;
             }
-            if (line == null) {
-                break;
-            }
-            historyList.add(line);
-            count--;
+            Collections.reverse(historyList);
+            chatArea.append(String.join("\n", historyList) + "\n");
+        } catch(IOException e){
+            e.printStackTrace();
         }
-        Collections.reverse(historyList);
-        chatArea.append(String.join("\n", historyList) + "\n");
     }
-
-    private void addMessageToHistory(String message) throws IOException {
-
+    void addMessageToHistory(String message) {
         if(authorized && !message.trim().isEmpty()){
             printStream.println(message);
         }
@@ -232,9 +234,4 @@ public class EchoClient extends JFrame {
     private String currentTime() {
         return new SimpleDateFormat("dd-MM-yy HH:mm:ss").format(System.currentTimeMillis());
     }
-
-
-
-
-
 }
