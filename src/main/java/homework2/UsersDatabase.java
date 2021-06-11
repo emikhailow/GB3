@@ -21,33 +21,15 @@ public class UsersDatabase {
     }
 
     public void createTable() throws SQLException {
-
-        if(!tableExists("users")){
-            String createTable = "create table users (" +
-                    "id integer not null primary key, " +
-                    "nickname varchar(30) not null," +
-                    "login varchar(30) not null unique," +
-                    "password varchar(30) not null)";
-            statement.execute(createTable);
-        }
-
+        String createTable = "create table if not exists users (" +
+                "id integer not null primary key, " +
+                "nickname varchar(30) not null," +
+                "login varchar(30) not null unique," +
+                "password varchar(30) not null)";
+        statement.execute(createTable);
     }
 
-    public boolean tableExists(String table){
-
-        DatabaseMetaData databaseMetaData = null;
-        try {
-            databaseMetaData = connection.getMetaData();
-            ResultSet resultSet = databaseMetaData.getTables(null, null, table, null);
-            return resultSet.next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-
-    }
-
-   public String getNickname(String login, String password) {
+    public String getNickname(String login, String password) {
 
         try(PreparedStatement preparedStatement = connection.prepareStatement("select nickname from users where login = ? and password = ?")){
             preparedStatement.setString(1, login);
