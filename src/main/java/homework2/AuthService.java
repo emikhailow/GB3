@@ -6,7 +6,11 @@ public interface AuthService {
     void stop();
 
     String getNickname(String login, String password);
-    boolean updateNickname(String login, String newNickname);
-    boolean createUser(String login, String password, String nickname);
+    default boolean updateNickname(String login, String newNickname){
+        throw new IllegalStateException("Can not be used in this implementation");
+    }
+    default boolean createUser(String login, String password, String nickname){
+        throw new IllegalStateException("Can not be used in this implementation");
+    }
 
 }

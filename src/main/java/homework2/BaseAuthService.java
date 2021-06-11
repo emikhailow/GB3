@@ -1,6 +1,7 @@
 package homework2;
 
-import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 public class BaseAuthService implements AuthService{
 
@@ -17,16 +18,16 @@ public class BaseAuthService implements AuthService{
         }
     }
 
-   private UsersDatabase usersDatabase;
+    private List<Entry> entries;
 
     public BaseAuthService() {
 
-        usersDatabase = new UsersDatabase();
-        try {
-            usersDatabase.createTable();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        entries = List.of(
+                new Entry("nick1", "login1", "pass1"),
+                new Entry("nick2", "login2", "pass2"),
+                new Entry("nick3", "login3", "pass3")
+        );
+
     }
 
     @Override
@@ -40,16 +41,27 @@ public class BaseAuthService implements AuthService{
     }
 
     @Override
-    public String getNickname(String login, String password) {
-        return usersDatabase.getNickname(login, password);
+    public String getNickname(String login, String pass) {
+        return entries.stream()
+                .filter(e -> e.login.equals(login) && e.pass.equals(pass))
+                .map(e -> e.nick)
+                .findFirst().orElse(null);
+
     }
 
-    public boolean updateNickname(String login, String newNickname){
-        return usersDatabase.updateNickname(login, newNickname);
+    @Override
+    public boolean updateNickname(String login, String newNickname) {
+
+        Optional<Entry> entry = Optional.of(entries.stream()
+                .filter(e -> e.login.equals(login))
+                .findFirst().orElse(null));
+        if(entry.isEmpty()){
+            return false;
+        }
+        entry.get().nick = newNickname;
+        return true;
+
     }
 
-    public boolean createUser(String login, String password, String nickname){
-        return usersDatabase.createUser(login, password, nickname);
-    }
 
 }

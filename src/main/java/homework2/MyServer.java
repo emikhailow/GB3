@@ -13,22 +13,16 @@ public class MyServer {
     private List<ClientHandler> clients;
 
     public MyServer() {
-
         try(ServerSocket server = new ServerSocket(ChatConstants.PORT)){
-
-            authService = new BaseAuthService();
+            authService = new DBAuthService();
             authService.start();
             clients = new ArrayList<>();
             while(true){
-
                 System.out.println("Server is waiting for connection...");
                 Socket socket = server.accept();
                 System.out.println("Client connected");
                 new ClientHandler(this, socket);
-
             }
-
-
         } catch (IOException e){
             e.printStackTrace();
         } finally {
@@ -36,7 +30,6 @@ public class MyServer {
                 authService.stop();
             }
         }
-
     }
 
     public AuthService getAuthService() {
@@ -70,7 +63,6 @@ public class MyServer {
     }
 
     public synchronized void broadcastClients() {
-
         String clientsMessage = new StringBuilder(ChatConstants.CLIENTS_LIST)
                 .append(" ")
                 .append(
@@ -79,7 +71,6 @@ public class MyServer {
                         .collect(Collectors.joining(" "))
                 ).toString();
         clients.forEach(c -> c.sendMessage(clientsMessage));
-
     }
 
 }

@@ -63,7 +63,7 @@ public class ClientHandler {
             }).start();
 
         } catch (IOException e) {
-            
+
             System.out.println("Problem while creating client");
             e.printStackTrace();
         }
@@ -174,16 +174,13 @@ public class ClientHandler {
             } else {
                 sendMessage("[Server]: invalid login / pass");
             }
-
         } else if(message.startsWith(ChatConstants.SIGN_UP)){
-
             String[] parts = message.split("\\s+");
             if(server.getAuthService().createUser(parts[1], parts[2], parts[3])){
                 sendMessage(String.format("[Server]: user %s has been successfully created", parts[3]));
             } else {
                 sendMessage(String.format("[Server]: user %s has not been created due to error", parts[3]));
             }
-
         }
     }
 
