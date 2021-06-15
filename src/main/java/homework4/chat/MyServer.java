@@ -14,7 +14,7 @@ public class MyServer {
 
     private AuthService authService;
     private List<ClientHandler> clients;
-    public ExecutorService executorService = Executors.newFixedThreadPool(ChatConstants.MAX_CLIENTS_QUAN);
+    private ExecutorService executorService = Executors.newFixedThreadPool(ChatConstants.MAX_CLIENTS_QUAN);
 
     public MyServer() {
 
@@ -41,6 +41,10 @@ public class MyServer {
             }
         }
 
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
     }
 
     public AuthService getAuthService() {

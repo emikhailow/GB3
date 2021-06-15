@@ -47,8 +47,8 @@ public class ClientHandler {
             this.name = "";
             this.authorized = false;
 
-            server.executorService.execute(this::checkAuthentificationTimeout);
-            server.executorService.execute(() -> {
+            server.getExecutorService().execute(this::checkAuthentificationTimeout);
+            server.getExecutorService().execute(() -> {
 
                 try {
                     autentification();

@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 
 public class PrintLettersInOrderUsingThreadsApp {
 
-    private static final int NUMBER_OF_REPEЕTITIONS = 3;
+    private static final int NUMBER_OF_REPETITIONS = 3;
 
     private final Object locker = new Object();
     private static final String stringToRepeat = "ABC";
@@ -24,7 +24,7 @@ public class PrintLettersInOrderUsingThreadsApp {
 
     private void printLetter(String stringToRepeat, int index){
         synchronized (locker){
-            for (int i = 0; i < NUMBER_OF_REPEЕTITIONS; i++) {
+            for (int i = 0; i < NUMBER_OF_REPETITIONS; i++) {
                 char letterToBePrinted = stringToRepeat.charAt(index);
                 while (currentLetter != letterToBePrinted) {
                     try {
