@@ -1,12 +1,39 @@
 package homework5;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MainClass {
 
-    public static final int CARS_COUNT = 4;
-    public volatile static CountDownLatch startLatch = new CountDownLatch(CARS_COUNT);
-    public volatile static CountDownLatch finishLatch = new CountDownLatch(CARS_COUNT);
+    private static final int CARS_COUNT = 4;
+    private volatile static CountDownLatch startLatch = new CountDownLatch(CARS_COUNT);
+    private volatile static CountDownLatch finishLatch = new CountDownLatch(CARS_COUNT);
+    private volatile static Car winner;
+    private static Lock lock = new ReentrantLock();
+
+    public static Car getWinner() {
+        return winner;
+    }
+
+    public static int getCarsCount() {
+        return CARS_COUNT;
+    }
+    public static void setWinner(Car winner) {
+        MainClass.winner = winner;
+    }
+
+    public static CountDownLatch getStartLatch() {
+        return startLatch;
+    }
+
+    public static CountDownLatch getFinishLatch() {
+        return finishLatch;
+    }
+
+    public static Lock getLock() {
+        return lock;
+    }
 
     public static void main(String[] args) {
         System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Подготовка!!!");
@@ -22,7 +49,7 @@ public class MainClass {
             startLatch.await();
             System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка началась!!!");
             finishLatch.await();
-            System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка закончилась!!!");
+            System.out.println(String.format("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка закончилась!!! Победитель: %s", winner.getName()));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
