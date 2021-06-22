@@ -1,12 +1,14 @@
 package homework6;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Homework6App {
 
-    public static ArrayList<Integer> ExtractSubArrayAfterLastOccurrence(List<Integer> arrayList, int occurence){
+    public static List<Integer> extractSubArrayAfterLastOccurrence(List<Integer> arrayList, int occurence){
         int index = arrayList.lastIndexOf(occurence);
         if(index == -1){
             throw new RuntimeException(String.format("No occurrence of %d", occurence));
@@ -18,12 +20,22 @@ public class Homework6App {
         }
     }
 
-    public static boolean CheckArrayForContainingOnlyFollowingNumbers(List<Integer> list, Integer... ints){
-       return Arrays.asList(ints).containsAll(list) && list.containsAll(Arrays.asList(ints));
+    public static boolean checkArrayForContainingOnlyFollowingNumbers(List<Integer> list, Integer... ints){
+        Map<Integer, Boolean> map = List.of(ints)
+                .stream()
+                .collect(Collectors.toMap(Function.identity(), x -> false));
+
+        for (Integer integer : list) {
+            if(map.get(integer) == null){
+                return false;
+            }
+            map.put(integer, true);
+        }
+        return map.entrySet().stream().allMatch(Map.Entry::getValue);
     }
 
     public static void main(String[] args) {
-        System.out.println(CheckArrayForContainingOnlyFollowingNumbers(List.of(1, 2, 1, 2, 1, 3), 1, 2, 3));
+        System.out.println(checkArrayForContainingOnlyFollowingNumbers(List.of(), 1, 4));
     }
 
 }

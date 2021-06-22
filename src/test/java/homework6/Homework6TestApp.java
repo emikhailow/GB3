@@ -3,6 +3,7 @@ package homework6;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
@@ -27,35 +28,39 @@ public class Homework6TestApp {
         for(int j = 0; j < arrayLength; j++){
             arrayList.add(random.nextInt(4));
         }
-        assertThrows(RuntimeException.class, () -> Homework6App.ExtractSubArrayAfterLastOccurrence(arrayList, 4));
+        assertThrows(RuntimeException.class, () -> Homework6App.extractSubArrayAfterLastOccurrence(arrayList, 4));
     }
 
-    @Test
+    public static Stream<Arguments> dataForTestAsExpectedExtractSubArrayAfterLastOccurrence(){
+        List<Arguments> out = new ArrayList<>();
+        out.add(Arguments.arguments(List.of(7, 0, 4, 1, 4, 3, 9, 1, 5, 9), List.of(3, 9, 1, 5, 9)));
+        out.add(Arguments.arguments(List.of(6, 8, 4, 9, 0, 1, 1, 1, 6, 6), List.of(9, 0, 1, 1, 1, 6, 6)));
+        out.add(Arguments.arguments(List.of(4, 1, 7, 0, 2, 3, 8, 5, 9, 5), List.of(1, 7, 0, 2, 3, 8, 5, 9, 5)));
+        out.add(Arguments.arguments(List.of(2, 1, 0, 2, 9, 4, 1, 3, 2, 6), List.of(1, 3, 2, 6)));
+        return out.stream();
+    }
+
     @DisplayName("ExtractSubArrayAfterLastOccurrence: as expected")
-    void testAsExpectedExtractSubArrayAfterLastOccurrence(){
-        HashMap<List<Integer>, List<Integer>> hashMap = new HashMap<>();
-        hashMap.put(List.of(7, 0, 4, 1, 4, 3, 9, 1, 5, 9), List.of(3, 9, 1, 5, 9));
-        hashMap.put(List.of(6, 8, 4, 9, 0, 1, 1, 1, 6, 6), List.of(9, 0, 1, 1, 1, 6, 6));
-        hashMap.put(List.of(4, 1, 7, 0, 2, 3, 8, 5, 9, 5), List.of(1, 7, 0, 2, 3, 8, 5, 9, 5));
-        hashMap.put(List.of(2, 1, 0, 2, 9, 4, 1, 3, 2, 6), List.of(1, 3, 2, 6));
-
-        for (Map.Entry<List<Integer>, List<Integer>> entry: hashMap.entrySet()){
-            assertEquals(Homework6App.ExtractSubArrayAfterLastOccurrence(entry.getKey(), 4), entry.getValue());
-        }
+    @ParameterizedTest
+    @MethodSource("dataForTestAsExpectedExtractSubArrayAfterLastOccurrence")
+    void testAsExpectedExtractSubArrayAfterLastOccurrence(List<Integer> list, List<Integer> result){
+        assertEquals(Homework6App.extractSubArrayAfterLastOccurrence(list, 4), result);
     }
 
-    @Test
-    @DisplayName("CheckArrayForContainingOnlyFollowingNumbers: as expected")
-    void testAsExpectedCheckArrayForContainingOnlyFollowingNumbers(){
-        HashMap<List<Integer>, Boolean> hashMap = new HashMap<>();
-        hashMap.put(List.of(1, 1, 1, 4, 4, 1, 4, 4), true);
-        hashMap.put(List.of(1, 1, 1, 1, 1, 1), true);
-        hashMap.put(List.of(4, 4, 4, 4), false);
-        hashMap.put(List.of(1, 4, 4, 1, 1, 4, 3), false);
+    public static Stream<Arguments> dataForTestAsExpectedCheckArrayForContainingOnlyFollowingNumbers(){
+        List<Arguments> out = new ArrayList<>();
+        out.add(Arguments.arguments(List.of(1, 1, 1, 4, 4, 1, 4, 4), true));
+        out.add(Arguments.arguments(List.of(1, 1, 1, 1, 1, 1), false));
+        out.add(Arguments.arguments(List.of(4, 4, 4, 4), false));
+        out.add(Arguments.arguments(List.of(1, 4, 4, 1, 1, 4, 3), false));
+        return out.stream();
+    }
 
-        for (Map.Entry<List<Integer>, Boolean> entry: hashMap.entrySet()){
-            assertEquals(Homework6App.CheckArrayForContainingOnlyFollowingNumbers(entry.getKey(), 1, 4), entry.getValue());
-        }
+    @DisplayName("CheckArrayForContainingOnlyFollowingNumbers: as expected")
+    @ParameterizedTest
+    @MethodSource("dataForTestAsExpectedCheckArrayForContainingOnlyFollowingNumbers")
+    void testAsExpectedCheckArrayForContainingOnlyFollowingNumbers(List<Integer> list, Boolean result){
+        assertEquals(Homework6App.checkArrayForContainingOnlyFollowingNumbers(list, 1, 4), result);
     }
 
 }
