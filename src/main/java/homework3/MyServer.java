@@ -1,5 +1,8 @@
 package homework3;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,6 +14,11 @@ public class MyServer {
 
     private AuthService authService;
     private List<ClientHandler> clients;
+    private final Logger LOGGER = LogManager.getLogger();
+
+    public Logger getLOGGER() {
+        return LOGGER;
+    }
 
     public MyServer() {
 
@@ -21,9 +29,9 @@ public class MyServer {
             clients = new ArrayList<>();
             while(true){
 
-                System.out.println("Server is waiting for connection...");
+                LOGGER.info("Server is waiting for connection...");
                 Socket socket = server.accept();
-                System.out.println("Client connected");
+                LOGGER.info("Client connected");
                 new ClientHandler(this, socket);
 
             }

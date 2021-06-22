@@ -1,5 +1,8 @@
 package homework3;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -17,6 +20,7 @@ public class ClientHandler {
     private String login;
     private volatile boolean authorized;
     private volatile long startTime;
+    private final Logger LOGGER = LogManager.getLogger();
 
     public String getName() {
         return name;
@@ -63,7 +67,7 @@ public class ClientHandler {
 
         } catch (IOException e) {
 
-            System.out.println("Problem while creating client");
+            LOGGER.error("[Server]: problem while creating client");
             e.printStackTrace();
         }
     }
@@ -73,6 +77,8 @@ public class ClientHandler {
         server.unubscribe(this);
         if(!name.isEmpty()){
             server.broadcastMessage(String.format("[Server]: %s has left chat", name));
+            LOGGER.info(String.format("[Server]: user %s has left chat", login));
+
         }
         try {
             inputStream.close();
@@ -138,7 +144,7 @@ public class ClientHandler {
                 } else {
                     server.broadcastMessage(String.format("[%s]: %s", name, messageFromClient));
                 }
-
+                LOGGER.info(String.format("[Server] user %s has sent: %s", login, messageFromClient));
             }
         }
     }
@@ -164,20 +170,28 @@ public class ClientHandler {
                     return;
 
                 }else{
-                    sendMessage(String.format("[Server]: This nickname has been taken"));
+                    String info = String.format("[Server]: nickname % has been taken", nick);
+                    sendMessage(info);
+                    LOGGER.warn(info);
                 }
 
             } else {
-                sendMessage(String.format("[Server]: Wrong login or password"));
+                String info = String.format("[Server]: Wrong login or password");
+                sendMessage(info);
+                LOGGER.warn(info);
             }
 
         } else if(message.startsWith(ChatConstants.SIGN_UP)){
 
             String[] parts = message.split("\\s+");
             if(server.getAuthService().createUser(parts[1], parts[2], parts[3])){
-                sendMessage(String.format("[Server]: User %s has been successfully created", parts[3]));
+                String info = String.format("[Server]: User %s has been successfully created", parts[3]);
+                sendMessage(info);
+                LOGGER.info(info);
             } else {
-                sendMessage(String.format("[Server]: User %s has not been created due to error", parts[3]));
+                String info = String.format("[Server]: User %s has not been created due to error", parts[3]);
+                sendMessage(info);
+                LOGGER.error(info);
             }
 
         }
@@ -191,7 +205,9 @@ public class ClientHandler {
                 break;
             }else if ((System.currentTimeMillis() - this.startTime) / 1000 > ChatConstants.TIMEOUT){
 
-                sendMessage(String.format("[Server]: You have reached timeout, connection will be closed"));
+                String message = String.format("[Server]: You have reached timeout, connection will be closed");
+                sendMessage(message);
+                LOGGER.info(message);
                 sendMessage(ChatConstants.CLOSE_CONNECTION);
                 break;
             }
