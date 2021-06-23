@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Priority {
-    int value() default Constants.MAX_PRIORITY;
+public @interface Test {
+    int priority() default 5;
 }

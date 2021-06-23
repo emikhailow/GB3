@@ -1,7 +1,5 @@
 package homework7;
 
-import org.junit.jupiter.api.Test;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -14,6 +12,14 @@ public class ReflectionApp {
     public static void start(Class clazz){
 
         Method[] methods = clazz.getDeclaredMethods();
+        Object instance = null;
+        try {
+            instance = clazz.getDeclaredConstructor().newInstance();
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            return;
+        }
+        Object instanceEF = instance;
 
         List<Method> methodsWithBeforeSuiteAnnotation = Arrays.stream(methods)
                 .filter(m -> m.getDeclaredAnnotation(BeforeSuite.class) != null)
@@ -24,21 +30,18 @@ public class ReflectionApp {
 
         if(!methodsWithBeforeSuiteAnnotation.isEmpty()){
             try {
-                methodsWithBeforeSuiteAnnotation.get(0).invoke(clazz);
+                methodsWithBeforeSuiteAnnotation.get(0).invoke(instanceEF);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
 
         Arrays.stream(methods)
-                .filter(m -> m.getDeclaredAnnotation(Test.class) != null)
-                .sorted(Comparator.comparingInt(o -> o.getDeclaredAnnotation(Priority.class) != null ?
-                        o.getDeclaredAnnotation(Priority.class).value() :
-                        Constants.MAX_PRIORITY
-                ))
+                .filter(m -> m.getDeclaredAnnotation(homework7.Test.class) != null)
+                .sorted(Comparator.comparingInt(o -> o.getDeclaredAnnotation(homework7.Test.class).priority()))
                 .forEach(m -> {
                     try {
-                        m.invoke(clazz);
+                        m.invoke(instanceEF);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
                     }
@@ -52,7 +55,7 @@ public class ReflectionApp {
         }
         if(!methodsWithAfterSuiteAnnotation.isEmpty()){
             try {
-                methodsWithAfterSuiteAnnotation.get(0).invoke(clazz);
+                methodsWithAfterSuiteAnnotation.get(0).invoke(instanceEF);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }

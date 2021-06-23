@@ -14,14 +14,12 @@ public class ReflectionTest2App {
         System.out.println("ReflectionTest2App" + " " + "beforeSuite2");
     }
 
-    @Test
-    @Priority()
+    @homework7.Test()
     public static void test1(){
         System.out.println("ReflectionTest2App" + " " + "test1");
     }
 
-    @Test
-    @Priority(1)
+    @homework7.Test(priority = 1)
     public static void test2(){
         System.out.println("ReflectionTest2App" + " " + "test2");
     }
